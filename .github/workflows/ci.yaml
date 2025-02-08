@@ -1,0 +1,32 @@
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Check out your repository.
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Set up the Zig compiler
+      - name: Set up Zig compiler
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 'master'
+          use-cache: true
+
+      # Build the project.
+      - name: Build Project
+        run: zig build
+
+      # Run tests.
+      - name: Run Tests
+        run: zig build test
+
+      # Check formatting.
+      #- name: Check Code Formatting
+      #  run: zig fmt --check
