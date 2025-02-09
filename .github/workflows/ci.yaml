@@ -28,5 +28,5 @@ jobs:
         run: zig build test
 
       # Check formatting.
-      #- name: Check Code Formatting
-      #  run: zig fmt --check
+      - name: Check Code Formatting
+        run: zig fmt --check src tests
