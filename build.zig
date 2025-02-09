@@ -1,14 +1,24 @@
 const std = @import("std");
+const protobuf = @import("protobuf");
 
 pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
+
+    const protobuf_dep = b.dependency("protobuf", .{
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const protobuf_mod = protobuf_dep.module("protobuf");
 
     const exe_mod = b.createModule(.{
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
+
+    exe_mod.addImport("protobuf", protobuf_mod);
 
     const exe = b.addExecutable(.{
         .name = "pegasus",
