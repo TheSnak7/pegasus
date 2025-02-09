@@ -12,18 +12,22 @@ pub fn build(b: *std.Build) void {
 
     const protobuf_mod = protobuf_dep.module("protobuf");
 
+    const zig_aio = b.dependency("zig-aio", .{});
+
     const exe_mod = b.createModule(.{
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
     });
 
-    exe_mod.addImport("protobuf", protobuf_mod);
-
     const exe = b.addExecutable(.{
         .name = "pegasus",
         .root_module = exe_mod,
     });
+
+    exe.root_module.addImport("protobuf", protobuf_mod);
+    exe.root_module.addImport("aio", zig_aio.module("aio"));
+    exe.root_module.addImport("coro", zig_aio.module("coro"));
 
     b.installArtifact(exe);
 
@@ -68,6 +72,8 @@ pub fn build(b: *std.Build) void {
 
     for (tests) |test_item| {
         test_item.root_module.addImport("protobuf", protobuf_mod);
+        test_item.root_module.addImport("aio", zig_aio.module("aio"));
+        test_item.root_module.addImport("coro", zig_aio.module("coro"));
 
         const run_main_tests = b.addRunArtifact(test_item);
 
